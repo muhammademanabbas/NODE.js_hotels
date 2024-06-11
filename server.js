@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 let personRouter = require('./Routers/personRouter');
 app.use('/person', PersonRouter);
 
+// in this port app will be run
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
