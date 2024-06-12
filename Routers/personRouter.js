@@ -1,31 +1,32 @@
 let express  = require('express')  ;
 let Person = require("../model/person.js");
 
+// router is object
 let router = express.Router();
+
+
+  // Fetch Data from the database
+  router.get("/", async (req, res) => {
+    try {
+      const persons = await Person.find();
+      res.status(200).json({ persons });
+      res.send(persons);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
    // Data will store in the database
 router.post("/", async (req, res) => {
     try {
       const data = req.body;
       const newPerson = new Person(data);
-      console.log(newPerson)
       let response  = await newPerson.save();
       console.log("Your Data Has Been Saved SuccesFully");
       res.status(200).json({ response });
     } catch (error) {
       console.log("Error While Saving Person Data!!");
       res.status(500).json({ error: "Inernal Server Error!!" });
-      console.log(error.message);
-    }
-  });
-
-  // Fetch Data from the database
-router.get("/", async (req, res) => {
-    try {
-      const persons = await Person.find();
-      res.status(200).json({ persons });
-      res.send(persons);
-    } catch (error) {
       console.log(error.message);
     }
   });
