@@ -5,13 +5,16 @@ const Person = require('./model/person.js');
 passport.use(new localStrategy(async (username, password, done)=>{
     try {
       console.log('---------I am the Passport\'s Local Strategy------------');
-      console.log(`Recieving Credientials :${username, password}`) ;  
-      let PersonData  = await Person.findOne({username:username})  ; 
+      console.log(`Recieving Credientials: `,username,password);  
+      let PersonData  = await Person.findOne({username:username}); 
       if(!PersonData){
         console.log('USER is not FOUND !!'); 
         return done(null, false , {message : 'Incorrect Username !!'});
       }
-      const isPasswordMatch  = PersonData.password === password ? true : false ;
+
+      // const isPasswordMAtch = password === PersonData.password ? true : false;
+      // comparePassword is custom function we definded in mongoose schema
+      const isPasswordMatch  = PersonData.comparePassword(password)
       if(isPasswordMatch){
         return done(null, username);
       }

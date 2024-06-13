@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     } catch (error) {
       console.log("Error While Saving Person Data!!");
       res.status(500).json({ error: "Inernal Server Error!!" });
-      console.log(error.message);
+      console.log(error);
     }
   });
 

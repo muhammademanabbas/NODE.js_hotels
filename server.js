@@ -3,7 +3,6 @@ const db = require("./db");
 const bodyParser = require("body-parser");
 require('dotenv').config();
 const PersonRouter  = require('./Routers/personRouter.js');
-
 const passport = require('./auth.js');
 
 
@@ -20,10 +19,10 @@ app.use(bodyParser.json());
 app.use(logRequest); 
 
 // Passport Authentication Initialize will run before the request reaches any route handlers
-app.use(passport.initialize()); 
+// app.use(passport.initialize()); 
 const localAuthMiddleware  =  passport.authenticate('local',{session:false})
 
-app.get("/", localAuthMiddleware, (req, res) => {
+app.get("/", (req, res) => {
   res.send("Welcome to Hotel Reservation System!!");
 });
 
