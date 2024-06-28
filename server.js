@@ -22,12 +22,12 @@ app.use(logRequest);
 // app.use(passport.initialize()); 
 const localAuthMiddleware  =  passport.authenticate('local',{session:false})
 
-app.get("/", (req, res) => {
+app.get("/",localAuthMiddleware, (req, res) => {
   res.send("Welcome to Hotel Reservation System!!");
 });
 
 // Express Routers
-app.use('/person', PersonRouter);
+app.use('/person',  PersonRouter);
 
 // Server PORT
 const PORT = process.env.PORT || 3000 ;

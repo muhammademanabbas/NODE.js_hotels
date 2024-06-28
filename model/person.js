@@ -49,7 +49,7 @@ PersonSchema.pre("save", async function (next) {
    // its saving a new person data by mongoose model which is not in database 
   const PersonData = this;
 
-  // if password is modified or not
+  // it checks wheather that you are saving the document is change the password field or not
   if(!PersonData.isModified("password")) return next()
 
   try {
@@ -70,7 +70,7 @@ PersonSchema.pre("save", async function (next) {
 });
 
 //  our custom function
-PersonSchema.methods.comparePassword = async (credientialPassword) => {
+PersonSchema.methods.comparePassword = async function (credientialPassword) {
   try {
     const isMatch = await bcrypt.compare(credientialPassword, this.password);
     return isMatch;
