@@ -87,6 +87,6 @@ PersonSchema.methods.comparePassword = async function (credientialPassword) {
   }
 };
 
-// Create Person model it create the collection name with the plural of person which is people
+// Create Person model, it creates the collection name with the plural of person which is people
 const Person = mongoose.model("Person", PersonSchema);
 module.exports = Person;

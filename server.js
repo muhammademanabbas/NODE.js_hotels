@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 require('dotenv').config();
 const PersonRouter  = require('./Routers/personRouter.js');
 const passport = require('./auth.js');
+// const {} =  require('./jwt.js')
 
 
 const app = express();

@@ -1,12 +1,13 @@
 let express  = require('express')  ;
 let Person = require("../model/person.js");
+let {GenerateToken , jwtAuthMiddleware} = require('../jwt.js')
 
 // router is object
 let router = express.Router();
 
 
   // Fetch Data from the database
-  router.get("/", async (req, res) => {
+  router.get("/", jwtAuthMiddleware , async (req, res) => {
     try {
       const persons = await Person.find();
       res.status(200).json({ persons });
@@ -17,19 +18,68 @@ let router = express.Router();
   });
 
    // Data will store in the database
-router.post("/", async (req, res) => {
+router.post("/signup", async (req, res) => {
     try {
       const data = req.body;
       const newPerson = new Person(data);
       let response  = await newPerson.save();
+
+      const payload =  {
+        id : response.id,  
+        username : response.username,
+      }
+
+      let token = GenerateToken(payload)
+      console.log("Token is : ",token)
+
       console.log("Your Data Has Been Saved SuccesFully");
-      res.status(200).json({ response });
+      res.status(200).json({ response , token });
     } catch (error) {
       console.log("Error While Saving Person Data!!");
       res.status(500).json({ error: "Inernal Server Error!!" });
       console.log(error);
     }
   });
+
+  // Data verification using JWT token
+  router.post("/login", async(req,res)=>{
+    try {
+      const {username,password}   =   req.body  ;  
+    let user  = await Person.findOne({username : username})
+
+    //  if both username of password both is incorrect
+    if(!user  || !(await user.comparePassword(password))){
+      res.status(401).json({error:"Invalid Username or Password"}) ;  
+      console.log("Invalid Username or Password");
+    }
+
+    const  payload  = {
+      id :  user.id ,  
+      username  :  user.username,
+    };  
+
+    const token  = (GenerateToken(payload))
+
+    res.json({token})
+    } catch (error) {
+      res.status(500).json({error:"Internal Server Error"});
+    }
+
+  })
+
+  // getting id from jwtToken Payload and find the whole user with that id
+  router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
+    try {
+      let payload  =  req.userPayload;  
+      console.log("User Payload is : ",payload);
+
+      const userID =  payload.id ;  
+      let user =   await Person.findById(userID) ;
+      res.status(200).json({user});
+    } catch (error) {
+      res.status(400).json({error:"Internal Server Error"});
+    }
+  })
 
   // Fetch Data according to work type by params
   router.get("/:workType", async (req, res) => {
